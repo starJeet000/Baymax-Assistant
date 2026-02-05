@@ -1,5 +1,3 @@
-# Specialist- This version can open youtube, youtube music, github, vscode, gemini ai, can search for your query on youtube, youtube music, github, create notes on desktop, create web coding project folders in Downloads, lock screen, battery status, organize downloads etc. The logic is hardcoded inside the assistantlogic class.
-
 import psutil
 import webbrowser
 import ctypes
@@ -20,16 +18,17 @@ import tkinter as tk
 from tkinter import filedialog 
 
 # --- CONFIGURATION ---
-BROWSER= ''
-BROWSER_PATH = r""  #Add your browser's .exe files path here to open browser
-PTT_KEY = ""  #Add your push-to-talk key here
+BROWSER= ''    #Add browser name here as key
+BRAVE_PATH = r""    #Add your browser's .exe files path here to open browser
+
+PTT_KEY = ""    #Add your push-to-talk key here
 
 # --- GUI CLASS ---
 class BaymaxFace:
     def __init__(self, root, logic_handler):
         self.root = root
         self.logic = logic_handler 
-        self.root.title("Baymax - Specialist")
+        self.root.title("Baymax - Universal")
         self.root.geometry("600x500") 
         self.root.configure(bg="white")
         self.root.attributes("-topmost", False) #Change to true for keeping baymax to the top of screen always over other applications.
@@ -102,8 +101,7 @@ class AssistantLogic:
         self.register_browser()
         
         # PATH CONFIGURATION
-        self.projects_path = os.path.join(os.path.expanduser("~"), "Downloads", "CodingProjects")   #For creating project folders in downloads     
-        self.desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")    #For creating notes in notepad on desktop
+        self.desktop_path = os.path.join(os.path.expanduser("~"), "Downloads")  #For creating notes in notepad in downloads
 
     def set_gui(self, gui):
         self.gui = gui
@@ -117,9 +115,9 @@ class AssistantLogic:
             print(f"Mic Error: {e}")
 
     def register_browser(self):
-        if os.path.exists(BROWSER_PATH):
-            webbrowser.register('BROWSER', None, webbrowser.BackgroundBrowser(BROWSER_PATH))
-            self.browser_key = 'BROWSER'
+        if os.path.exists(BRAVE_PATH):
+            webbrowser.register(BROWSER, None, webbrowser.BackgroundBrowser(BRAVE_PATH))
+            self.browser_key = BROWSER
         else:
             self.browser_key = None 
 
@@ -127,7 +125,7 @@ class AssistantLogic:
         text = text.lower()
         text = text.replace("baymax", "").replace("hey", "")
         clean = re.sub(r'\b(can|could|would|will) you\b', '', text)
-        clean = re.sub(r'\b(please|kindly|just)\b', '', clean)
+        clean = re.sub(r'\b(please|kindly|just|be a dear and)\b', '', clean)
         return clean.strip()
 
     def speak(self, text):
@@ -191,7 +189,7 @@ class AssistantLogic:
         downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
         self.speak("Cleaning up Downloads folder.")
         extensions = {
-            "Images": [".jpg", ".jpeg", "JFIF", ".png", ".gif", ".webp"],
+            "Images": [".jpg", ".jpeg", ".JFIF", ".png", ".gif", ".webp"],
             "Documents": [".pdf", ".docx", ".txt", ".xlsx", ".pptx"],
             "Installers": [".exe", ".msi", ".zip", ".7z", ".rar"],
             "Audio": [".mp3", ".wav"],
@@ -220,31 +218,39 @@ class AssistantLogic:
         if not raw_command: return
         command = self.clean_command(raw_command)
         
-        # --- COMMANDS (Hardcoded only) ---
-        
-        if "restart" in command and "system" in command:
-            self.speak("Restarting system.")
-            subprocess.Popen([sys.executable] + sys.argv)
-            os._exit(0)
+        # --- UNIVERSAL APP LAUNCHER (NEW) ---
+        if command.startswith("open ") or command.startswith("launch "):
+            app_name = command.replace("open ", "").replace("launch ", "").strip()
+            # Filter out known keywords to prevent conflicts
+            if app_name not in ["youtube", "google", "code", "browser", "project", "note"]:
+                self.speak(f"Launching {app_name}")
+                pyautogui.press('win')
+                time.sleep(0.1)
+                pyautogui.write(app_name)
+                time.sleep(0.2)
+                pyautogui.press('enter')
+                return 
 
-        elif "shutdown" in command and "system" in command:
-            self.speak("Shutting down system.")
-            os._exit(0)
+        # --- MEDIA & WINDOWS (NEW) ---
+        if "volume up" in command:
+            pyautogui.press("volumeup", presses=5)
+            self.speak("Volume increased.")
+        elif "volume down" in command:
+            pyautogui.press("volumedown", presses=5)
+            self.speak("Volume decreased.")
+        elif "mute" in command:
+            pyautogui.press("volumemute")
+            self.speak("Audio muted.")
+        elif "play" in command or "pause" in command:
+            pyautogui.press("playpause")
+        elif "minimize all" in command:
+            pyautogui.hotkey('win', 'm')
+            self.speak("Desktop visible.")
+        elif "switch window" in command:
+            pyautogui.hotkey('alt', 'tab')
 
-        elif "open gemini" in command:
-            self.speak("Opening Gemini.")
-            webbrowser.open_new_tab(f"https://gemini.google.com/app")
-
-        elif "github search" in command:
-            query = command.split("github search")[-1].strip()
-            self.speak(f"Searching GitHub for {query}")
-            webbrowser.open_new_tab(f"https://github.com/search?q={query}")
-
-        elif "open github" in command:
-            self.speak("Opening Github.")
-            webbrowser.open_new_tab("https://github.com")
-
-        elif "youtube search" in command:
+        # --- WEB EXPLORER ---
+        if "youtube search" in command:
             query = command.split("youtube search")[-1].strip()
             self.speak(f"Searching YouTube for {query}")
             webbrowser.open_new_tab(f"https://www.youtube.com/results?search_query={query}")
@@ -267,34 +273,55 @@ class AssistantLogic:
             self.speak(f"Searching for {query}")
             webbrowser.open_new_tab(f"https://www.google.com/search?q={query}")
 
-        elif "create web project" in command:
-            project_name = command.replace("create web project", "").strip()
-            if project_name: self.create_web_project(project_name)
-
-        elif "open code" in command:
+        # --- DEVELOPER TOOLS ---
+        if "open code" in command:
             self.speak("Opening VS Code.")
             os.system("code")
-        
-        elif "clean downloads" in command:
-            self.organize_downloads()
 
+        elif "open gemini" in command:
+            self.speak("Opening Gemini.")
+            webbrowser.open_new_tab(f"https://gemini.google.com/app")
+
+        elif "github search" in command:
+            query = command.split("github search")[-1].strip()
+            self.speak(f"Searching GitHub for {query}")
+            webbrowser.open_new_tab(f"https://github.com/search?q={query}")
+
+        elif "open github" in command:
+            self.speak("Opening Github.")
+            webbrowser.open_new_tab("https://github.com")
+        
+        # --- UTILITIES ---
+        if "clean downloads" in command:
+            self.organize_downloads()
+        
         elif "create note" in command:
             note_content = command.replace("create note", "").strip()
             filename = f"Note_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
             filepath = os.path.join(self.desktop_path, filename)
             try:
                 with open(filepath, "w") as f: f.write(note_content)
-                self.speak("Note saved to Desktop.")
+                self.speak("Note saved to Downloads.")
                 os.startfile(filepath)
             except: self.speak("Could not create note.")
         
-        elif "battery status" in command:
+        # --- SYSTEM ---
+        if "battery status" in command:
             battery = psutil.sensors_battery()
             self.speak(f"Battery is at {battery.percent} percent.")
-
+        
         elif "lock screen" in command:
             self.speak("Locking workstation.")
             ctypes.windll.user32.LockWorkStation()
+        
+        elif "shutdown" in command and "system" in command:
+            self.speak("Shutting down system.")
+            os._exit(0)
+
+        elif "restart" in command and "system" in command:
+            self.speak("Restarting systems.")
+            subprocess.Popen([sys.executable] + sys.argv)
+            os._exit(0)
 
     def run_lifecycle(self):
         self.speak("Baymax Online.")
