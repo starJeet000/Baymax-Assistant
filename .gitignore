@@ -1,0 +1,14 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+
+# User-specific settings (Optional, but good practice)
+# config.py
+
+# VS Code settings
+.vscode/
+
+# Environment
+.env
+venv/

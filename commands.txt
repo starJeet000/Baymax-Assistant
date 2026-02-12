@@ -1,0 +1,101 @@
+=================================================
+Python Desktop Automation System - COMMAND MANUAL
+=================================================
+
+--- 1. ASSISTANT CONTROL ---
+
+Wake Word Check: "[AI Name]" (e.g., "Jarvis")
+-> Assistant responds: "I am listening"
+
+Identity Check: "Who are you"
+
+Shutdown Assistant: "Shutdown System" or "Assistant Shutdown"
+-> Action: Safely closes the AI script ONLY.
+
+Restart Assistant: "restart system" or "Assistant Restart"
+-> Action: Reboots the AI script ONLY.
+
+--- 2. PC SYSTEM CONTROL ---
+
+Battery Level: "Battery status"
+
+Lock PC: "Lock screen"
+
+Shutdown PC: "Shutdown computer" or "Shutdown PC"
+-> Action: Turns off the actual Windows PC.
+
+Restart PC: "Restart computer" or "Restart PC"
+-> Action: Restarts the actual Windows PC.
+
+Hibernate PC: "Hibernate computer" or "Hibernate PC"
+-> Action: Puts the actual Windows PC into hibernation mode.
+
+--- 3. WINDOW & VOLUME MANAGEMENT ---
+
+Minimize Window: "Minimize" 
+
+Minimize All: "Minimize all" 
+
+Switch App: "Switch window" 
+
+Volume Up: "Volume up" (Increases by 10%)
+
+Volume Down: "Volume down" (Decreases by 10%)
+
+Mute: "Mute"
+
+Media Control: "Play" or "Pause"
+
+--- 4. OPENING APPS & FILES ---
+
+Universal Launcher: "Open [App Name]" or "Launch [App Name]"
+-> Example: "Open Notepad", "Launch Spotify", "Open Calculator"
+-> Note: Works for any app searchable in your Start Menu.
+
+File Explorer: "Open Explorer"
+
+VS Code: "Open Code"
+
+--- 5. FILE ORGANIZATION ---
+
+Create Folder: "Create folder [Name]"
+-> Example: "Create folder Projects" (Created inside Downloads)
+
+Create File: "Create file [Name]"
+-> Example: "Create file notes.txt" (Created inside Downloads)
+
+Organizer: "Clean downloads"
+-> Action: Sorts files in Downloads into Images, Audio, Video, etc.
+
+--- 6. WEB & SEARCH ---
+
+General Search: "Search for [Query]" or "Run a search on [Query]"
+-> Example: "Search for Python tutorials"
+
+Google Gemini: "Open Gemini"
+
+Claude AI: "Open Claude"
+
+YouTube: "Open YouTube"
+
+YouTube Search: "YouTube search [Query]"
+-> Example: "YouTube search funny cats"
+
+YouTube Music: "Open music"
+
+Music Search: "Music search [Query]"
+-> Example: "Music search Linkin Park"
+
+GitHub: "Open GitHub"
+
+GitHub Search: "Search GitHub [Query]"
+-> Example: "Search GitHub react projects"
+
+--- 7. UTILITIES ---
+
+Timer: "Set timer for [X] minutes" or "Remind me in [X] minutes"
+-> Example: "Set timer for 10 minutes"
+
+Date: "Date" (Tells today's date)
+
+Time: "Time" (Tells current time)
