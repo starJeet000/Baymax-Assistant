@@ -50,7 +50,7 @@ It features a lightweight Tkinter GUI for visual status feedback (Listening, Pro
 
 ### **Installation Steps**
 
-1. **Clone the repository:** git clone https://github.com/yourusername/desktop-automation-system.git  
+1. **Clone the repository:** git clone https://github.com/starJeet000/Desktop-Automation-System.git  
    cd desktop-automation-system  
 2. **Install Dependencies:** pip install \-r requirements.txt  
    *Note: pypiwin32 is critical for audio driver access on Windows.* 3\. **Configure the Environment:** Open config.py and strictly update the following:  
